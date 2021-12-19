@@ -366,4 +366,15 @@ def main():
         sys.exit(-1)
 
 if __name__ == '__main__':
+    # add for android--------------------------------------
+    def get_avg():
+        s= None
+        with open('/proc/loadavg', 'r') as f:
+            s = f.read()
+        s = s.split()[0:3]
+        return [float(x) for x in s]
+
+    if not hasattr(os, "getloadavg"):
+        os.getloadavg = get_avg
+    #add for android end--------------------------------------    
     main()

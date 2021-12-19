@@ -310,19 +310,37 @@ class BedMeshCalibrate:
         # floor distances down to next hundredth
         x_dist = math.floor(x_dist * 100) / 100
         y_dist = math.floor(y_dist * 100) / 100
+        logging.info("generate_points:--------------------------------------------")
+        logging.info("x_cnt:%-4d" % x_cnt)
+        logging.info("y_cnt:%-4d" % y_cnt)
+        logging.info("min_x:%.1f" % min_x)
+        logging.info("min_y:%.1f" % min_y)
+        logging.info("max_x:%.1f" % max_x)
+        logging.info("max_y:%.1f" % max_y)
+        logging.info("x_dist:%.1f" % x_dist)
+        logging.info("y_dist:%.1f" % y_dist)
+        
         if x_dist <= 1. or y_dist <= 1.:
             raise error("bed_mesh: min/max points too close together")
 
         if self.radius is not None:
             # round bed, min/max needs to be recalculated
             y_dist = x_dist
-            new_r = (x_cnt / 2) * x_dist
+            new_r = ((x_cnt -1) / 2) * x_dist
             min_x = min_y = -new_r
             max_x = max_y = new_r
         else:
             # rectangular bed, only re-calc max_x
             max_x = min_x + x_dist * (x_cnt - 1)
         pos_y = min_y
+        logging.info("///--------------------------------------------")
+        logging.info("min_x:%.1f" % min_x)
+        logging.info("min_y:%.1f" % min_y)
+        logging.info("max_x:%.1f" % max_x)
+        logging.info("max_y:%.1f" % max_y)
+        logging.info("x_dist:%.1f" % x_dist)
+        logging.info("y_dist:%.1f" % y_dist)
+
         points = []
         for i in range(y_cnt):
             for j in range(x_cnt):
@@ -341,6 +359,10 @@ class BedMeshCalibrate:
                     if dist_from_origin <= self.radius:
                         points.append(
                             (self.origin[0] + pos_x, self.origin[1] + pos_y))
+                        logging.info("append point:(%.1f, %.1f)" % (self.origin[0] + pos_x, self.origin[1] + pos_y )) 
+                    else:
+                        logging.info("NOt append point:(%.1f, %.1f)" % (self.origin[0] + pos_x, self.origin[1] + pos_y )) 
+
             pos_y += y_dist
         self.points = points
         if not self.faulty_regions:
